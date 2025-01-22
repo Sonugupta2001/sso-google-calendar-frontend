@@ -14,25 +14,31 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const access_token = localStorage.getItem('access_token');
-        const refresh_token = localStorage.getItem('refresh_token');
+        const authorisation_code = localStorage.getItem('authorization_code'); 
 
-        const response = await fetch('http://localhost:5001/api/events/getEvents', {
+        const response = await fetch('http://localhost:5001/api/getEvents', {
+          method: 'GET',
+          credentials: "include",
           headers: {
-            Authorization: `Bearer ${access_token}`,
-            'x-refresh-token': refresh_token,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authorisation_code}`,
           },
         });
+
         const data = await response.json();
         if (data.success) {
           setEvents(Array.isArray(data.events) ? data.events : []);
-        } else {
-          console.error('Failed to fetch events:', data.message);
         }
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      } finally {
-        setLoading(false);
+        else {
+          navigate('/');
+          console.error( data.message );
+        }
+      }
+      catch (error) {
+        console.error( error );
+      }
+      finally {
+        setLoading( false );
       }
     };
 
@@ -42,10 +48,25 @@ const Dashboard = () => {
     }
   }, [fetched]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    navigate('/');
+  const handleLogout = async () => {
+    localStorage.removeItem('authorization_code');
+    await fetch('http://localhost:5001/api/logout', {
+      method: 'GET',
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log('logged out successfully');
+        navigate('/');
+      }
+      else {
+        console.error( data.message );
+      }
+    })
   };
 
   const columns = [

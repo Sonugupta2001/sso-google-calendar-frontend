@@ -4,38 +4,33 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleLogin = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (response) => {
-      if (isSubmitting) return;
-      setIsSubmitting(true);
-
       const authorizationCode = response.code;
+      localStorage.setItem('authorization_code', authorizationCode);
 
-      fetch('http://localhost:5001/api/auth/getTokens', {
-        method: 'GET',
+      await fetch('http://localhost:5001/api/login', {
+        method: 'POST',
+        credentials: "include",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authorizationCode}`,
         },
+        body: JSON.stringify({
+          code: authorizationCode,
+        }),
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            localStorage.setItem('access_token', data.tokens.access_token);
-            localStorage.setItem('refresh_token', data.tokens.refresh_token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-
-            navigate('/dashboard');
-          } else {
-            console.error('Authentication failed:', data.message);
-          }
-        })
-        .catch((error) => {
-          console.error('Error during authentication:', error);
-        });
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('session id: ', document.cookie);
+          navigate('/dashboard');
+        }
+        else {
+          console.error( data.message );
+        }
+      })
     },
     onError: () => {
       console.error('Login Failed');
@@ -45,8 +40,8 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <button onClick={handleLogin} disabled={isSubmitting}>
-        {isSubmitting ? 'Signing in...' : 'Sign in with Google'}
+      <button onClick={handleLogin}>
+        Login with Google
       </button>
     </div>
   );
