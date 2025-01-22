@@ -14,14 +14,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const authorisation_code = localStorage.getItem('authorization_code'); 
-
-        const response = await fetch('http://localhost:5001/api/getEvents', {
+        const response = await fetch('https://sso-google-calendar-backend.onrender.com/api/getEvents', {
           method: 'GET',
           credentials: "include",
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${authorisation_code}`,
           },
         });
 
@@ -50,7 +47,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     localStorage.removeItem('authorization_code');
-    await fetch('http://localhost:5001/api/logout', {
+    await fetch('https://sso-google-calendar-backend.onrender.com/api/logout', {
       method: 'GET',
       credentials: "include",
       headers: {

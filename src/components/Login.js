@@ -11,9 +11,10 @@ const Login = () => {
       const authorizationCode = response.code;
       localStorage.setItem('authorization_code', authorizationCode);
 
-      await fetch('http://localhost:5001/api/login', {
+      await fetch('https://sso-google-calendar-backend.onrender.com/api/login', {
         method: 'POST',
         credentials: "include",
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
         },
