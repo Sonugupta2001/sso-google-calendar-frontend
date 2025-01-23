@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+  createTheme,
+  ThemeProvider,
+} from "@mui/material/styles";
 import {
   Box,
   Button,
@@ -10,7 +13,6 @@ import {
   Avatar,
   Popover,
   TextField,
-  Grid,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
@@ -24,6 +26,7 @@ const Dashboard = () => {
   const [filterDate, setFilterDate] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
+
   const theme = createTheme();
 
   useEffect(() => {
@@ -34,30 +37,14 @@ const Dashboard = () => {
           {
             method: "GET",
             credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
           }
         );
+
         const data = await response.json();
         if (data.success) {
-          setEvents(
-            Array.isArray(data.events)
-              ? data.events.map((event) => ({
-                ...event,
-                start: new Date(event.start.dateTime || event.start.date)
-                  .toLocaleString("en-IN", {
-                    timeZone: "Asia/Kolkata",
-                  })
-                  .replace(",", ""),
-              }))
-              : []
-          );
-          setProfile(
-            Object.keys(data.profile).length
-              ? data.profile
-              : {}
-          );
+          setEvents(Array.isArray(data.events) ? data.events : []);
+          setProfile(Object.keys(data.profile).length ? data.profile : {});
         } else {
           navigate("/");
           console.error(data.message);
@@ -68,6 +55,7 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
+
     if (!fetched) {
       setFetched(true);
       fetchEvents();
@@ -78,8 +66,8 @@ const Dashboard = () => {
     if (filterDate) {
       const filtered = events.filter(
         (event) =>
-          event.start.includes(filterDate) ||
-          event.start.includes(filterDate)
+          event.start?.dateTime?.startsWith(filterDate) ||
+          event.start?.date?.startsWith(filterDate)
       );
       setFilteredEvents(filtered);
     } else {
@@ -89,16 +77,11 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     localStorage.removeItem("authorization_code");
-    await fetch(
-      "https://sso-google-calendar-backend.onrender.com/api/logout",
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((response) =>
+    await fetch("https://sso-google-calendar-backend.onrender.com/api/logout", {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    }).then((response) =>
       response.json().then((data) => {
         if (data.success) {
           console.log("Logged out successfully");
@@ -125,19 +108,11 @@ const Dashboard = () => {
   };
 
   const columns = [
-    {
-      field: "id",
-      headerName: "ID",
-      width: 90,
-      headerAlign: "center",
-      align: "center",
-    },
+    { field: "id", headerName: "ID", width: 90 },
     {
       field: "summary",
       headerName: "Event",
       width: 250,
-      headerAlign: "center",
-      align: "center",
       renderCell: (params) => (
         <Typography
           sx={{
@@ -151,37 +126,26 @@ const Dashboard = () => {
         </Typography>
       ),
     },
-    {
-      field: "start",
-      headerName: "Start Time",
-      width: 180,
-      headerAlign: "center",
-      align: "center",
-    },
-    {
-      field: "end",
-      headerName: "End Time",
-      width: 180,
-      headerAlign: "center",
-      align: "center",
-    },
+    { field: "start", headerName: "Start Time", width: 180 },
+    { field: "end", headerName: "End Time", width: 180 },
   ];
 
   const rows = filteredEvents.map((event, index) => ({
     id: index + 1,
     summary: event.summary || "No Summary",
-    start: event.start,
-    end: event.end || "No End Time",
+    start: event.start?.dateTime || event.start?.date || "No Start Time",
+    end: event.end?.dateTime || event.end?.date || "No End Time",
     details: event.description || "No additional details",
   }));
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-      }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+        }}
       >
         {/* Header Section */}
         <Box
@@ -231,7 +195,12 @@ const Dashboard = () => {
               {profile.email || "user@example.com"}
             </Typography>
             <Box sx={{ textAlign: "center", marginTop: 2 }}>
-              <Button variant="contained" color="primary" onClick={handleLogout} fullWidth>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleLogout}
+                fullWidth
+              >
                 Logout
               </Button>
             </Box>
@@ -256,7 +225,6 @@ const Dashboard = () => {
               border: "1px solid #ddd",
               borderRadius: 2,
               backgroundColor: "#f9f9f9",
-              overflow: "auto",
             }}
           >
             {loading ? (
@@ -286,7 +254,6 @@ const Dashboard = () => {
                   pageSize={10}
                   rowsPerPageOptions={[10, 25, 50, 100]}
                   pagination
-                  sx={{ height: "100%", width: "100%" }}
                 />
               </>
             )}
