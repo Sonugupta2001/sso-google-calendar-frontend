@@ -1,71 +1,94 @@
-# Getting Started with Create React App
+# Google Calendar Application [Technical Documentation]
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 1. Overview
+This application is a Single Page Application (SPA) built with React. It allows users to log in using their Google account and manage their Google Calendar events. The app uses the Google OAuth2.0 protocol for secure user authentication and the Google Calendar API to retrieve event details.
 
-## Available Scripts
+### Core Features:
+- User authentication via Google OAuth2.
+- Fetching and displaying Google Calendar events.
+- Filtering events by date.
+- Viewing event details.
+- Logout functionality.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 2. Technologies Used
+- **React**: For building the UI components.
+- **Material-UI (MUI)**: For styling and UI components.
+- **@react-oauth/google**: For handling Google OAuth2 authentication.
+- **React Router DOM**: For client-side routing.
+- **Fetch API**: For making HTTP requests to the backend.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 3. Project Setup Instructions
+Follow the steps below to set up and run the application:
 
-### `npm test`
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Sonugupta2001/sso-google-calendar-frontend
+   cd sso-google-calendar-frontend
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Install Dependencies**:
+   Ensure you have Node.js installed. Then, run:
+   ```bash
+   npm install
+   ```
 
-### `npm run build`
+3. **Set Up Environment Variables**:
+   Create a `.env` file in the root directory and add the following:
+   ```env
+   GOOGLE_CLIENT_ID=<your-google-client-id>
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. **Run the Application**:
+   Start the development server:
+   ```bash
+   npm start
+   ```
+   The application will be accessible at `http://localhost:3000`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 4. Application Components
 
-### `npm run eject`
+### Login Component
+- **Purpose**: Handles user login using Google OAuth2.
+- **Key Design**:
+  - The component initializes the Google login process using specific OAuth2 scopes for calendar and user information.
+  - It sends the authorization code received from Google to the backend, which exchanges it for an access token.
+  - The application stores the code in `localStorage` for session persistence.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Dashboard Component
+- **Purpose**: Displays the user's Google Calendar events.
+- **Key Design**:
+  - Utilizes a state management approach to fetch and store user profile and event data.
+  - Provides a date filter to dynamically display relevant events.
+  - Uses a tabular layout (e.g., DataGrid) to show event details in an organized manner.
+  - Includes a logout mechanism that clears session data and redirects the user to the login page.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### App Component
+- **Purpose**: Acts as the root component and sets up routing for the application.
+- **Key Design**:
+  - Integrates the Google OAuth client ID using a provider component.
+  - Configures routes to enable seamless navigation between the login and dashboard pages.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 5. API Integration
+- **Endpoints**:
+  1. `POST /api/login`: Handles the exchange of the authorization code for an access token.
+  2. `GET /api/getEvents`: Retrieves the user's Google Calendar events.
+  3. `GET /api/logout`: Ends the user's session and clears any active tokens.
 
-## Learn More
+The frontend communicates with these endpoints using the Fetch API, ensuring secure and efficient data exchange.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# sso-google-calendar-frontend
+## 6. Styling
+The application employs Material-UI (MUI) for its styling, ensuring consistency and responsiveness across devices. The design leverages:
+- **Predefined Themes**: For cohesive color schemes and typography.
+- **Custom Styles**: Defined inline or through MUI's `sx` prop to enhance specific components, such as buttons and cards.
+- **Data Presentation**: Uses components like tables and grids to display data in a user-friendly format.
