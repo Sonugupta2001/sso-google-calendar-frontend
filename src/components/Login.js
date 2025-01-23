@@ -23,7 +23,7 @@ const Login = () => {
       ];
       
 
-      await fetch('https://sso-google-calendar-backend.onrender.com', {
+      await fetch('https://sso-google-calendar-backend.onrender.com/api/login', {
         method: 'POST',
         credentials: "include",
         withCredentials: true,
@@ -47,7 +47,6 @@ const Login = () => {
     onError: () => {
       console.error('Login Failed');
     },
-    // scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events',
     scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
   });
 
