@@ -10,8 +10,20 @@ const Login = () => {
     onSuccess: async (response) => {
       const authorizationCode = response.code;
       localStorage.setItem('authorization_code', authorizationCode);
+      
+      // production url for fetch request - https://sso-google-calendar-backend.onrender.com
+      // development url for fetch request - http://localhost:5001
 
-      await fetch('https://sso-google-calendar-backend.onrender.com/api/login', {
+      const SCOPES = [
+        'https://www.googleapis.com/auth/calendar',
+        'https://www.googleapis.com/auth/calendar.events',
+        'https://www.googleapis.com/auth/calendar.readonly',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
+      ];
+      
+
+      await fetch('https://sso-google-calendar-backend.onrender.com', {
         method: 'POST',
         credentials: "include",
         withCredentials: true,
@@ -25,7 +37,6 @@ const Login = () => {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          console.log('session id: ', document.cookie);
           navigate('/dashboard');
         }
         else {
@@ -36,7 +47,8 @@ const Login = () => {
     onError: () => {
       console.error('Login Failed');
     },
-    scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events',
+    // scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events',
+    scope: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
   });
 
   return (
