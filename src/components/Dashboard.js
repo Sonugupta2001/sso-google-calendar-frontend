@@ -15,6 +15,10 @@ import {
   TextField,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(localizedFormat);
 
 const Dashboard = () => {
   const [events, setEvents] = useState([]);
@@ -108,11 +112,11 @@ const Dashboard = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "id", headerName: "ID", width: 80 },
     {
       field: "summary",
       headerName: "Event",
-      width: 250,
+      width: 220,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -126,15 +130,23 @@ const Dashboard = () => {
         </Typography>
       ),
     },
-    { field: "start", headerName: "Start Time", width: 180 },
-    { field: "end", headerName: "End Time", width: 180 },
+    { field: "start", headerName: "Start Time", width: 200 },
+    { field: "end", headerName: "End Time", width: 200 },
   ];
 
   const rows = filteredEvents.map((event, index) => ({
     id: index + 1,
     summary: event.summary || "No Summary",
-    start: event.start?.dateTime || event.start?.date || "No Start Time",
-    end: event.end?.dateTime || event.end?.date || "No End Time",
+    start: event.start?.dateTime
+      ? dayjs(event.start.dateTime).locale("en-in").format("DD MMM YYYY, hh:mm A")
+      : event.start?.date
+      ? dayjs(event.start.date).locale("en-in").format("DD MMM YYYY")
+      : "No Start Time",
+    end: event.end?.dateTime
+      ? dayjs(event.end.dateTime).locale("en-in").format("DD MMM YYYY, hh:mm A")
+      : event.end?.date
+      ? dayjs(event.end.date).locale("en-in").format("DD MMM YYYY")
+      : "No End Time",
     details: event.description || "No additional details",
   }));
 
@@ -220,7 +232,7 @@ const Dashboard = () => {
           <Box
             sx={{
               flexGrow: 1,
-              width: "70%",
+              width: "65%",
               height: "100%",
               border: "1px solid #ddd",
               borderRadius: 2,
@@ -254,6 +266,12 @@ const Dashboard = () => {
                   pageSize={10}
                   rowsPerPageOptions={[10, 25, 50, 100]}
                   pagination
+                  sx={{
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    padding: "10px",
+                    backgroundColor: "white",
+                  }}
                 />
               </>
             )}
