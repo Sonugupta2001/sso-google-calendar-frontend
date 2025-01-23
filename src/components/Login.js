@@ -46,7 +46,7 @@ const Login = () => {
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'flex-start', // Aligns content to the top
+        alignItems: 'flex-start',
         minHeight: '100vh',
         backgroundColor: '#f4f6f8',
         padding: '20px',
@@ -61,7 +61,7 @@ const Login = () => {
           textAlign: 'center',
           backgroundColor: '#fff',
           boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-          marginTop: '12%', // Adjust this to control how far above the center it is
+          marginTop: '12%',
         }}
       >
         <Box sx={{ mb: 4 }}>
